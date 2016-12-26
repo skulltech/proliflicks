@@ -1,6 +1,16 @@
 import os
+import json
+import tmdbsimple as tmdb
 from guessit import guessit
+from pythonopensubtitles.opensubtitles import OpenSubtitles
+from pythonopensubtitles.utils import File
 
+with open('credentials.json', 'r'):
+	creds = json.load(f)
+
+EMAIL = creds['opensubtitles']['email']
+PASSWORD = creds['opensubtitles']['password']
+TMDB_APIKEY = creds['tmdb']['APIKey']
 
 class Media:
 	def __init__(self, path):
@@ -24,6 +34,7 @@ class Media:
 	def edit_info(self, infodict):
 		self.info.update(infodict)
 
+
 def scan_directory(directory):
 	media_containers = ['3g2', 'wmv', 'webm', 'mp4', 'avi', 'mp4a', 'mpeg', 'sub', 'mka', 'm4v', 'ts', 'mkv', 'ra', 'rm', 'wma', 'ass', 'mpg', 'ram', '3gp', 'ogv', 'mov', 'ogm', 'asf', 'divx', 'ogg', 'ssa', 'qt', 'idx', 'nfo', 'wav', 'flv', '3gp2', 'iso', 'mk2', 'srt']
 	files = []
@@ -38,3 +49,18 @@ def scan_directory(directory):
 		medias.append(media)
 
 	return medias
+
+
+def fetch_subtitles(media):
+	os = OpenSubtitles()
+
+	token = os.login(EMAIL, PASSWORD)
+	if not type(token) == str:
+		raise Exception('[*] Bad OpenSubtitles credentials!')
+
+	f = File(media.abspath)
+	hash = f.get_hash()
+	size = f.size()
+
+	data = os.search_subtitles([{'sublanguageid': 'all', 'moviehash': hash, 'moviebytesize': size}])
+	return data
