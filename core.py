@@ -1,5 +1,8 @@
 import os
 import json
+import shelve
+import hashlib
+
 import tmdbsimple as tmdb
 from guessit import guessit
 from pythonopensubtitles.opensubtitles import OpenSubtitles
@@ -75,3 +78,9 @@ def fetch_subtitles(media):
 
 	data = os.search_subtitles([{'sublanguageid': 'all', 'moviehash': hash, 'moviebytesize': size}])
 	return data
+
+def get_hash(file_path):
+    '''Return the md5 hash of a file.
+    '''
+    f = open(file_path, 'rb').read()
+    return hashlib.md5(f).hexdigest()
