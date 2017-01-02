@@ -23,6 +23,7 @@ class Media:
 		self.info = {}
 
 		self.parse_filename(self, self.filename)
+		self.media_type = self.get_mediatype()
 
 	def parse_filename(self, filename, type=None, title=None):
 		options = {
@@ -34,9 +35,19 @@ class Media:
 	def edit_info(self, infodict):
 		self.info.update(infodict)
 
+	def get_mediatype(self):
+		vid_containers = ['3g2', 'wmv', 'webm', 'mp4', 'avi', 'mp4a', 'mpeg', 'mka', 'm4v', 'ts', 'mkv', 'ra', 'rm', 'wma', 'ass', 'mpg', 'ram', '3gp', 'ogv', 'mov', 'ogm', 'asf', 'divx', 'ogg', 'ssa', 'qt', 'idx', 'nfo', 'wav', 'flv', '3gp2', 'iso', 'mk2']
+		sub_containers = ['sub', 'srt']
+
+		file_extension = os.path.splittext(self.filename)[1][1:]
+		if file_extension in vid_containers:
+			return 'vid'
+		else if file_extension in sub_containers:
+			return 'sub'
+
 
 def scan_directory(directory):
-	media_containers = ['3g2', 'wmv', 'webm', 'mp4', 'avi', 'mp4a', 'mpeg', 'sub', 'mka', 'm4v', 'ts', 'mkv', 'ra', 'rm', 'wma', 'ass', 'mpg', 'ram', '3gp', 'ogv', 'mov', 'ogm', 'asf', 'divx', 'ogg', 'ssa', 'qt', 'idx', 'nfo', 'wav', 'flv', '3gp2', 'iso', 'mk2', 'srt']
+	media_containers = ['3g2', 'wmv', 'webm', 'mp4', 'avi', 'mp4a', 'mpeg', 'mka', 'm4v', 'ts', 'mkv', 'ra', 'rm', 'wma', 'ass', 'mpg', 'ram', '3gp', 'ogv', 'mov', 'ogm', 'asf', 'divx', 'ogg', 'ssa', 'qt', 'idx', 'nfo', 'wav', 'flv', '3gp2', 'iso', 'mk2', 'sub', 'srt']	
 	files = []
 	for (dirpath, dirnames, filenames) in os.walk(directory):
 		for file in filenames:
